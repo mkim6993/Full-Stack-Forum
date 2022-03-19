@@ -1,0 +1,312 @@
+<!--Forum-->
+<!DOCTYPE html>
+<html lang="eng">
+    <head>
+        <title>Get Votes</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+        </script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+            .tabs {
+                display: none;
+            }
+            body {
+                background-color: beige;
+            }
+            #tabContainer {
+                background-color: whitesmoke;
+                border: 1px solid;
+                width: 90%;
+                position: relative;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .forumPost {
+                background-color: whitesmoke;
+                border: 1px solid grey;
+                border-radius: 5px;
+                margin: 10px;
+                padding: 5px;
+            }
+            .forumTitle {
+                color: teal;
+            }
+            .forumText {
+                font-size: 15px;
+            }
+            #forumPostContainer {
+                background-color: red;
+                margin: auto;
+                width: 85%;
+            }
+            #navBarContainer {
+                background-color: whitesmoke;
+                border: 1px solid grey;
+                width: 14%;
+                right: 3%;
+                position: fixed;
+                text-align: center;
+            }
+            #bannerContainer {
+                background-color: rgb(53, 95, 184);
+                border: 1px solid grey;
+                width: 100%;
+                left: 0%;
+                position: fixed;
+                bottom: 30px;
+                height: 5%;
+                z-index: 1;
+            }
+            #writePostFocus {
+                background-color: white;
+                height: 100vh;
+                width: 100%;
+                position: absolute;
+                top: 0px;
+                opacity: .6;
+                display: none;
+            }
+            #editPostFocus {
+                background-color: white;
+                height: 100vh;
+                width: 100%;
+                position: absolute;
+                top: 0px;
+                opacity: .6;
+                display: none;
+            }
+            #writeNewPost {
+                background-color: rgb(211, 149, 211);
+                position: fixed;
+                top: 10%;
+                width: 82%;
+                height: 50%;
+                left: 9%;
+                display: none;
+            }
+            #editPost {
+                background-color: bisque;
+                position: fixed;
+                top: 10%;
+                width: 82%;
+                height: 50%;
+                left: 9%;
+                display: none;
+            }
+            #newPostContent {
+                background-color: whitesmoke;
+                margin: 3%;
+            }
+            #editPostContent {
+                background-color: whitesmoke;
+                margin: 3%;
+            }
+            #header {
+                background-color: bisque;
+                flex-direction: column;
+            }
+            #breakingNews {
+                margin: 0;
+                position: absolute;
+                top: 50%;
+                -ms-transform: translateY(-50%);
+                transform: translateY(-50%);
+            }
+            #pages {
+                background-color: whitesmoke;
+                border: 1px solid grey;
+                width: 50%;
+                height: 5%;
+                display: flex;
+                justify-content: center;
+                margin-left: auto;
+                margin-right: auto;
+                position: relative;
+                margin-bottom: 100px;
+            }
+            .postDate {
+                font-size: 10px;
+            }
+            .forumText {
+                font-size: 12px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="header">
+        </div>
+
+
+        
+        <div id="tabContainer">
+            <button class="tabButton" onclick="showNewPostEditor()">Write</button>
+            <button class="tabButton" onclick="showPosts()">Tab2</button>
+            <button class="tabButton">Tab3</button>
+            <input id="search" placeholder="search">
+            <button class="tabButton" style="float: right;">Tab4</button>
+        </div>
+
+
+
+        <div id="navBarContainer">Save Post</div>
+        <div id="bannerContainer">
+            <div id="breakingNews">Breaking news!!!!</div>
+        </div>
+
+        <div id="forumPostContainer">
+            <div class="forumPost">
+                <div class="postHeader" style="display: flex; justify-content: space-between;">
+                    <h3 class="forumTitle">Sample Post</h3>
+                    <button class="editOption" style="float: right;" onclick="showPostEditor(this)">Edit</button>
+                </div>
+                <p class="postDate">1/24/2022</p>
+                <p class="forumText">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam repellendus, odio repudiandae eveniet, quisquam amet rerum libero in blanditiis maxime praesentium dolorum facilis quae suscipit ipsam corrupti repellat? Deserunt, adipisci?</p>
+            </div>
+        </div>
+
+
+        <div id="pages">
+            <div>< 1, 2, 3></div>
+        </div>
+
+
+        <div id="writePostFocus">
+        </div>
+        <div id="writeNewPost">
+            <button style="float: right;" onclick="showNewPostEditor()">&times</button>
+            <div id="newPostContent">
+                <h3>Create new Post</h3>
+            </div>
+            <div id="newPostContent">
+                <input id="newPostTitle" type="text" placeholder="Title" value="">
+            </div>
+            <div id="newPostContent">
+                <input id="newPostText" type="text" placeholder="write somethin..." value="">
+            </div>
+            <p id="newPostRes"></p>
+            <div style="margin: 3%;">
+                <button onclick="postNewPost()">Post</button>
+                <button onclick="clearNewPost()">Clear</button>
+            </div>
+        </div>
+
+        <div id="editPostFocus">
+        </div>
+        <div id="editPost">
+            <button style="float: right;" onclick="exitEditor()">&times</button>
+            <div id="editPostContent">
+                <h3>Edit Post</h3>
+            </div>
+            <div id="editPostContent">
+                <input id="editPostTitle" type="text" placeholder="Title" value="">
+            </div>
+            <div id="editPostContent">
+                <input id="editPostText" type="text" placeholder="write somethin..." value="">
+            </div>
+            <p id="editPostRes"></p>
+            <div style="margin: 3%;">
+                <button onclick="">Submit</button>
+                <button onclick="clearPostEditor()">Clear</button>
+            </div>
+        </div>
+        
+        
+
+        <script type="text/javascript">
+            console.log("onload");
+            $.ajax({
+                url: "http://localhost:5678/home",
+                type: "get",
+                success: function(response) {
+                    //console.log(response.posts);
+                    for (var i = 0; i < response.posts.length; i++) {
+                        //console.log(response.posts[i].title);
+                        document.getElementById("forumPostContainer").innerHTML += 
+                            '<div class="forumPost">'+
+                                '<h3 class="forumTitle">' + response.posts[i].title + '</h3>'+
+                                '<p class="postDate">' + response.posts[i].date + '</p>'+
+                                '<p class="forumText">' + response.posts[i].text + '</p>'+
+                            '</div>';
+                    }
+                },
+                error: function(xhr) {
+                    console.log("find db error");
+                }
+            });
+           
+            
+
+            /**
+             * show/hide create new post option 
+             */
+            function showNewPostEditor() {
+                var editor = document.getElementById('writeNewPost');
+                if (editor.style.display == "none") {
+                    document.getElementById('writeNewPost').style.display = "block";
+                    document.getElementById('writePostFocus').style.display = "block";
+                } else {
+                    document.getElementById('writeNewPost').style.display = "none";
+                    document.getElementById('writePostFocus').style.display = "none";
+                }
+            }
+
+            function clearNewPost() {
+                document.getElementById('newPostTitle').value = "";
+                document.getElementById('newPostText').value = "";
+            }
+
+            function postNewPost() {
+                var title_ = $("#newPostTitle").val();
+                var text_ = $("#newPostText").val();
+                //console.log("title:", title_ + ", text:", text_);
+            
+                $.ajax({
+                    url: "http://localhost:5678/newPost",
+                    type: "post",
+                    data: {
+                        title: title_,
+                        text: text_
+                    },
+                    success: function(response) {
+                        console.log("success! sent http POST request");
+                        $("#newPostRes").text(response.message);
+                        clearNewPost();
+                    },
+                    error: function(xhr) {
+                        console.log("error:", xhr);
+                        $("#newPostRes").text("error - internal server error");
+                    }
+                });
+            }
+
+            function exitEditor() {
+                var focus = document.getElementById('editPostFocus');
+                var editor = document.getElementById('editPost');
+                focus.style.display = "none";
+                editor.style.display = "none";
+            }
+
+            function showPostEditor(tag) {
+                var title = $(tag).parent().children('.forumTitle').text();
+                var date = $(tag).parent().parent().children('.postDate').text();
+                var text = $(tag).parent().parent().children('.forumText').text();
+                document.getElementById('editPostFocus').style.display = "block";
+                document.getElementById('editPost').style.display = "block";
+                $('#editPostTitle').val(title);
+                $('#editPostText').val(text);
+            }
+
+            function clearPostEditor() {
+                document.getElementById('editPostTitle').value = "";
+                document.getElementById('editPostText').value = "";
+            }
+
+            function updatePost() {
+                var title_ = $("#editPostTitle").val();
+                var text_ = $("#editPostText").val();
+            }
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </body>
+</html>

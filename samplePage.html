@@ -1,0 +1,307 @@
+<!--filename: getVote.html pg.160-->
+<!DOCTYPE html>
+<html lang="eng">
+    <head>
+        <title>Get Votes</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+        </script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+            .tabs {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="container">
+            <h2>Student Records</h2>
+        </div>
+        <div class="tabNavigator">
+            <button class="newStudent" onclick="openTab('new')">New</button>
+            <button class="updateRecord" onclick="openTab('update')">Update</button>
+            <button class="getRecord" onclick="openTab('record');">View</button>
+            <button class="removeRecord" onclick="openTab('remove')">Remove</button>
+        </div>
+        
+        <div id="new" class='tabs' style="display: block;">
+            <h3>New Student</h3>
+            <label>First Name: </label>
+            <input type="text" id="firstName" value="">
+            <label>Last Name: </label>
+            <input type="text" id="lastName" value="">
+            <br>
+            <label>GPA: </label>
+            <input type="text" id="gpa" value="">
+            <br>
+            <p>Enrollment Status: </p>
+            <input type="radio" id="yesEnrolled" name="enrollment" value="true">
+            <label for="yesEnrolled">Yes</label>
+            <input type="radio" id="noEnrolled" name="enrollment" value="false">
+            <label for="noEnrolled">No</label>
+            <br>
+            <button onclick=addStudent()>Submit</button>
+            <button onclick=clearNew()>Clear</button>
+            <br>
+            <br>
+            <div id="newDisplay" name="newDisplay"> </div>
+            <div id="idDisplay" name = "idDisplay"> </div>
+        </div>
+        
+
+        <div id="update" class='tabs'>
+            <h3>Update Student Record</h3>
+            <br>
+            <label>Student ID: </label>
+            <input type="text" id="find" value="">
+            <button onclick="getStudent()">Find</button>
+            <div id="displayStudentID"></div>
+            <br>
+            <br>
+            <label>First Name: </label>
+            <input type="text" id="updatefirstName" value="">
+            <label>Last Name: </label>
+            <input type="text" id="updatelastName" value="">
+            <br>
+            <label>GPA: </label>
+            <input type="text" id="updategpa" value="">
+            <br>
+            <p>Enrollment Status: </p>
+            <input type="radio" id="updateyesEnrolled" name="enrollment">
+            <label for="yesEnrolled">Yes</label>
+            <input type="radio" id="updatenoEnrolled" name="enrollment">
+            <label for="noEnrolled">No</label>
+            <br>
+            <button onclick="updateStudent()">Update</button>
+            <br>
+            <br>
+            <div id="updateDisplay"></div>
+        </div>
+
+        <div id="record" class='tabs'>
+            <h3>Find Student Record</h3>
+            <br>
+            <label>Student ID: </label>
+            <input type="text" id="find2" value="">
+            <button onclick="findStudent()">Find</button>
+            <div id="displayStudent"></div>
+            <br>
+            <button id="showAll" onclick=populateTable()>Show All/Refresh</button>
+            <div id="allStudents">
+                <h2>All Students</h2>
+            </div>
+        </div>
+
+        <div id="remove" class='tabs'>
+            <h3>Remove Student from Record</h3>
+            <br>
+            <label>Student ID: </label>
+            <input type="text" id="find3" value="">
+            <button onclick="searchStudent()">Find</button>
+            <div id="displayStudent2"></div>
+            <br>
+            <button onclick="removeStudent()">Remove</button>
+            <div id="rmMessage"></div>
+        </div>
+
+        <div id="forumPostContainer">
+            <div class="forumPost">
+                <h3 class="forumTitle">Hello</h3>
+                <p>01/15/2022</p>
+                <p class="forumText">This is a description</p>
+            </div>
+        </div>
+
+        
+
+        
+
+        <script type="text/javascript">
+
+            function openTab(tabName) {
+                var i;
+                var x = document.getElementsByClassName('tabs');
+                for (i = 0; i < x.length; i++) {
+                    x[i].style.display = "none";
+                }
+                document.getElementById(tabName).style.display = "block";
+            }
+
+            function clearNew() {
+                document.getElementById('firstName').value = "";
+                document.getElementById('lastName').value = "";
+                document.getElementById('gpa').value = "";
+                var ele = document.getElementsByName("enrollment");
+                for(var i=0;i<ele.length;i++)
+                    ele[i].checked = false;
+            }
+
+            function showStudentInfo(data) {
+                document.getElementById('updatefirstName').value = data.first_name;
+                document.getElementById('updatelastName').value = data.last_name;
+                document.getElementById('updategpa').value = data.gpa;
+                if (data.enrolled == "true") {
+                    $("#updateyesEnrolled").prop("checked", true);
+                } else {
+                    $("#updatenoEnrolled").prop("checked", true);
+                }
+            }
+
+            function addStudent() {
+                var firstName = $("#firstName").val();
+                var lastName = $("#lastName").val();
+                var gpa = $("#gpa").val();
+                var enrollment;
+                var ele = document.getElementsByName('enrollment');
+                for (var i = 0; i < ele.length; i++) {
+                    if (ele[i].checked) {
+                        var boo = ele[i].value === "true" ? true : false;
+                        enrollment = boo;
+                    }
+                }
+                $.ajax({
+                    url: "http://localhost:5678/students",
+                    type: "post",
+                    data: {
+                        first_name: firstName,
+                        last_name: lastName,
+                        gpa: gpa,
+                        enrolled: enrollment
+                    },
+                    success: function(response) {
+                        $("#newDisplay").text("Status: " + response.message);
+                        console.log("success: " + response.message);
+                        $("#idDisplay").text("Studentid: " + response.record_id);
+                        console.log("student id: " + response.record_id);
+                    },
+                    error: function(xhr) {
+                        $("#newDisplay").text(response.message);
+                        console.log("error: " + xhr);
+                    }
+                });
+            }
+
+            function getStudent() {
+                var stud_id = $('#find').val();
+                console.log("id: " + stud_id);
+                $.ajax({
+                    url: "http://localhost:5678/students/" + stud_id,
+                    type: "get",
+                    success: function(response) {
+                        var data = jQuery.parseJSON(response);
+                        console.log("response: " + response);
+                        console.log("id: " + data.record_id);
+                        $("#displayStudentID").text("ID: " + data.record_id);
+                        showStudentInfo(data);
+                    },
+                    error: function(xhr) {
+                        $("#displayStudentID").text("Incorrect ID.");
+                    }
+                });
+            }
+
+            function searchStudent() {
+                var stud_id = $("#find3").val();
+                $.ajax({
+                    url: "http://localhost:5678/students/" + stud_id,
+                    type: "get",
+                    success: function(response) {
+                        var data = jQuery.parseJSON(response);
+                        $("#displayStudent2").replaceWith(
+                                "<div id=\"student\"><h3>" + data.first_name + " " + data.last_name + "</h3><p>GPA: " + data.gpa + "</p><p>Enrollment Status: " + data.enrolled + "</p></div><br><br>"
+                            );
+                    },
+                    error: function(response) {
+                        $("#displayStudent2").replaceWith(response.message);
+                    }
+                })
+            }
+
+            function findStudent() {
+                var stud_id = $("#find2").val();
+                $.ajax({
+                    url: "http://localhost:5678/students/" + stud_id,
+                    type: "get",
+                    success: function(response) {
+                        var data = jQuery.parseJSON(response);
+                        $("#displayStudent").replaceWith(
+                                "<div id=\"student\"><h3>" + data.first_name + " " + data.last_name + "</h3><p>GPA: " + data.gpa + "</p><p>Enrollment Status: " + data.enrolled + "</p></div><br><br>"
+                            );
+                        console.log("success!");
+                    },
+                    error: function(response) {
+                        $("#displayStudent").append("Error: " + response);
+                    }
+                })
+            }
+
+            function updateStudent() {
+                var id = $("#find").val();
+                var firstName = $("#updatefirstName").val();
+                var lastName = $("#updatelastName").val();
+                var gpa = $("#updategpa").val();
+                var enrollment;
+                var ele = document.getElementsByName('enrollment');
+                for (var i = 0; i < ele.length; i++) {
+                    if (ele[i].checked) {
+                        var boo = ele[i].value === "true" ? true : false;
+                        enrollment = boo;
+                    }
+                }
+                $.ajax({
+                    url: "http://localhost:5678/students/" + id,
+                    type: "put",
+                    data: {
+                        first_name: firstName,
+                        last_name: lastName,
+                        gpa: gpa,
+                        enrolled: enrollment
+                    },
+                    success: function(response) {
+                        $("#updateDisplay").text("Update Successful");
+                    },
+                    error: function(response) {
+                        $("#updateDisplay").text("Error. Unable to update");
+                    }
+                });
+            }
+
+            function populateTable() {
+                $.ajax({
+                    url: "http://localhost:5678/students",
+                    type: "get",
+                    success: function(response) {
+                        var arr = response.students;
+                        var str = "";
+                        for (var i in arr) {
+                            console.log(arr[i]);
+                            var data = arr[i];
+                            str += "<div id=\"student\"><h3>" + data.first_name + " " + data.last_name + "</h3><p>ID: " + data.record_id + "</p><p>GPA: " + data.gpa + "</p><p>Enrollment Status: " + data.enrolled + "</p></div><br><br>";
+                        }
+                        $("#allStudents").replaceWith(str);
+                    }
+                });
+            }
+
+            function removeStudent() {
+                var stud_id = $("#find3").val();
+                console.log("remove " + stud_id);
+                $.ajax({
+                    url: "http://localhost:5678/students/" + stud_id,
+                    type: "delete",
+                    success: function(response) {
+                        $("#rmMessage").replaceWith(response.message);
+                        console.log("successfully deleted");
+                    },
+                    error: function(response) {
+                        $("#rmMessage").replaceWith(response.message);
+                        console.log("error in deletion");
+                    }
+                })
+            }
+
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </body>
+</html>

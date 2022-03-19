@@ -1,0 +1,19 @@
+{
+  "name": "forum",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkim6993/forum.git"
+  },
+  "author": "Min Sung Kim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mkim6993/forum/issues"
+  },
+  "homepage": "https://github.com/mkim6993/forum#readme"
+}
